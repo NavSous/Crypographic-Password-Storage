@@ -4,13 +4,20 @@ import sqlite3
 #Initialize SQLite client connected to a database
 con = sqlite3.connect('main.db')
 cur = con.cursor()
+#Create a list of special characters for password security
+special_characters = "!@#$%^&*()-+?_=,<>/'"
 #Create salt to prevent rainbow table attacks
 salt = "stoprainbowtables"
-#Class for creating a user object
+
+#Class for creating a user object (Create a user using: User(parameters, ))
 class User:
     def __init__(self, id, username, password):
         self.id = id
         self.username = username
+        #Ensure the password is safe
+        if len(password) < 8 or not any(a in special_characters for a in password) or password.upper() == password or password.lower() == password:
+            print("That password is not storng enough")
+            return None
         #Hash the password using sha256, and salt it
         salted = password + salt
         pwd = hlib.sha256(salted.encode('utf8')).hexdigest()
@@ -27,6 +34,7 @@ class User:
             #Insert data into the SQLite database
             cur.execute("INSERT INTO users (id, username, password) VALUES (?, ?, ?)", (self.id, self.username, pwd))
             con.commit()
+User(6, "USIER", "weakpassword")
 #Function for authenticating the user
 def login(uname, pword):
     x = None
