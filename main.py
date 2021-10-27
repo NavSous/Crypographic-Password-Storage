@@ -9,7 +9,7 @@ special_characters = "!@#$%^&*()-+?_=,<>/'"
 #Create salt to prevent rainbow table attacks
 salt = "stoprainbowtables"
 
-#Class for creating a user object (Create a user using: User(parameters, ))
+#Class for creating a user object (Create a user using: User(id, username, password))
 class User:
     def __init__(self, id, username, password):
         self.id = id
@@ -34,7 +34,7 @@ class User:
             #Insert data into the SQLite database
             cur.execute("INSERT INTO users (id, username, password) VALUES (?, ?, ?)", (self.id, self.username, pwd))
             con.commit()
-User(6, "USIER", "weakpassword")
+
 #Function for authenticating the user
 def login(uname, pword):
     x = None
@@ -67,8 +67,9 @@ if auth_result[0]:
     #Find the user object by the id
     for row in cur.execute('''SELECT * FROM users WHERE id = ?''', (auth_result[1],)):
         x = row
-    #Print a success statement (This could be turned into a running account instance to create posts to the databse)
+    #Print a success statement
     print("You are know logged in to the account with these properties: ", x)
+    #Allow the user to create a post to the database
     ip = input("Enter what you want your post to be: ")
     cur.execute("INSERT INTO posts (user_id, user_username, comment_text) VALUES (?, ?, ?)", (x[0], x[1], ip))
     con.commit()
