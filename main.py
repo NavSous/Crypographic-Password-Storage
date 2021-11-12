@@ -14,11 +14,11 @@ class User:
     def __init__(self, id, username, password):
         self.id = id
         self.username = username
-        #Ensure the password is safe
+        #Ensure the password is safe (It is unsafe it is all one case or it lacks any special characters)
         if len(password) < 8 or not any(a in special_characters for a in password) or password.upper() == password or password.lower() == password:
             print("That password is not storng enough")
             return None
-        #Hash the password using sha256, and salt it
+        #Salt the password and then hash it using sha256
         salted = password + salt
         pwd = hlib.sha256(salted.encode('utf8')).hexdigest()
         #Prevent multiple of the same usernames or id's being in the database
